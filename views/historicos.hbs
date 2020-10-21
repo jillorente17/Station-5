@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Historicos</title>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+
+    <div class="ventana" id="vent">
+        <div id="cerrar"> <a href="javascript:cerrar()"><img src="/css/cancelar.png"></a></div>
+        Error: el tiempo de inicio es mayor que el de fin. Intente de nuevo.
+    </div>
+
+
+
+    <header class="titulo opacidad">
+        <div class="contenedor contenido-header">
+            <div class="barra">
+
+                <img src="/logo.png" alt="Logo Blodreina">
+
+
+
+                <nav class="navegacion">
+                    <a href="" target="_blank">Históricos</a>
+                    <a href="/" target="_blank">Volver</a>
+
+                </nav>
+            </div>
+            <h1>Consulta de históricos</h1>
+        </div>
+    </header>
+
+
+    <section class="resultados">
+        <h2>Elegir camión:</h2>
+
+        <form action="" class="opciones">
+            <div class="radio">
+
+
+                <h3><input type="radio" name="taxi" id="taxi1" value="1">
+                    <label for="taxi1"><strong>CAMIÓN 1</strong></label>
+
+                    <input type="radio" name="taxi" id="taxi2" value="2">
+                    <label for="taxi2"><strong>CAMIÓN 2</strong></label>
+
+                    <input type="radio" name="taxi" id="ambos">
+                    <label for="ambos"><strong>Ambos</strong></label></h3>
+            </div>
+        </form>
+    </section>
+
+
+
+    <section class="fechas">
+        <h2>Datos iniciales</h2>
+        <h5><input id="fecha1" type="datetime-local" min="" max="" value=""></h5>
+
+
+        <h2>Datos finales</h2>
+        <input id="fecha2" type="datetime-local" min="" max="" value="">
+
+        <div class="button" onclick="javascript:comparar()">Consultar</div>
+        
+    </section>
+    <div id="map-template"></div>
+</body>
+
+</html>
+<script>
+
+    //mapa
+    const map = L.map('map-template').setView([10.99304, -74.82814], 13);
+    const tileurl = 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png';
+    const tileurl2 = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png';
+    L.tileLayer(tileurl).addTo(map);
+
+    //ventana emergente
+    const inicio = document.getElementById("fecha1");
+    const final = document.getElementById("fecha2");
+    let puntos1 = [];
+    let puntos2 = [];
+    let vtaxi1 = [];
+    let vtaxi2 = [];
+    let polyline;
+    compare = 'BLODREINA';
+    let polyline1;
+
+    function comparar() {
+
+        valor = document.getElementsByName("taxi")[0].checked; //taxi1
+        valor2 = document.getElementsByName("taxi")[1].checked; // taxi2 
+        valor3 = document.getElementsByName("taxi")[2].checked; // taxi3 
+
+        if (valor == true) {
+            choose = 1;
+
+        } else if (valor2 == true) {
+            choose = 2;
+
+        } else if (valor3 == true) {
+            choose = 0;
+        } else {
+
+        }
+
+        let a = new Date(inicio.value)
+        a.getMilliseconds()
+        var x = a.toString();
+        let b = new Date(final.value)
+        b.getMilliseconds()
+        if (a > b) {
+            document.getElementById("vent").style.display = "block";
+        } else {
+            let info = {
+                fecha1: inicio.value, fecha2: final.value, chooser: choose
+            }
+
+            fetch("/endpoint", { //peticion http
+                method: 'POST', // tipo de peticion put get delete post , post manda informacion nueva , put actualiza algo existente 
+                body: JSON.stringify(info), // just in case 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                return res.json() //quitar cabeceras 
+            }).then(info => {
+                if (polyline && polyline1) {
+                    polyline.remove();
+                    polyline1.remove();
+
+                } else if (polyline1) {
+                    polyline1.remove();
+                } else if (polyline) {
+                    polyline.remove();
+                } else {
+                 console.log("nothin");
+                }
+                var f = 0;
+                var g = 0;
+                info.map((d, i) => { // for 
+                    vec = info[i];
+                    ids = vec.dat;
+                    console.log(ids);
+                    if (ids == compare) {
+                        vtaxi1[g] = info[i];
+                        g = g + 1;
+                        console.log('en blodreina');
+
+                    } else {
+                        vtaxi2[f] = info[i];
+                        f = f + 1;
+                    }
+                })
+                console.log(vtaxi1);
+
+                if (choose == '1') {
+                    vtaxi1.map((d, i) => { // for 
+                        puntos1[i] = {
+                            lat: d.lat,
+                            lon: d.lon
+                        }
+                    })
+                    polyline = L.polyline(puntos1).addTo(map);
+                    polyline.setStyle({
+                        color: 'red'
+                    });
+                } else if (choose == '2') {
+                    vtaxi2.map((d, i) => { // for 
+                        puntos2[i] = {
+                            lat: d.lat,
+                            lon: d.lon
+                        }
+                    })
+                    polyline1 = L.polyline(puntos2).addTo(map);
+                    polyline1.setStyle({
+                        color: 'green'
+                    });
+                } else if (choose == '0') {
+                    vtaxi1.map((d, g) => { // for 
+                        puntos1[g] = {
+                            lat: d.lat,
+                            lon: d.lon
+                        }
+                    })
+                    polyline = L.polyline(puntos1).addTo(map);
+                    polyline.setStyle({
+                        color: 'red'
+                    });
+                    vtaxi2.map((d, f) => { // for 
+                        puntos2[f] = {
+                            lat: d.lat,
+                            lon: d.lon
+                        }
+                    })
+                    polyline1 = L.polyline(puntos2).addTo(map);
+                    polyline1.setStyle({
+                        color: 'green'
+                    });
+                } else {
+
+                }
+
+            })
+        }
+
+    }
+    function cerrar() {
+        document.getElementById("vent").style.display = "none";
+    }
+
+    //fecha actual
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    var hh = today.getHours();
+    var min = today.getMinutes();
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    if (hh < 10) {
+        hh = '0' + hh
+    }
+    if (min < 10) {
+        min = '0' + min
+    }
+    today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + min;
+    today1 = yyyy + '-' + mm + '-' + dd + 'T' + "23" + ':' + "59";
+    today2 = yyyy + '-' + mm + '-' + dd + 'T' + "00" + ':' + "00";
+    final.value = today1;
+    inicio.value = today2;
+
+</script>

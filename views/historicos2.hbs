@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>¿Dónde estuvo el taxi?</title>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<header class="titulo opacidad">
+    <div class="contenedor contenido-header">
+        <div class="barra">
+
+            <img src="/logo.png" alt="Logo">
+
+
+
+            <nav class="navegacion">
+                <a href="localhost:8080/historicos.hbs" target="_blank">Históricos</a>
+                <a href="/" target="_blank">Volver</a>
+
+            </nav>
+        </div>
+        <h1>¿Dónde estuvo el camión en determinado momento?</h1>
+    </div>
+</header>
+
+<section class="resultados">
+        <h2>Elegir camión:</h2>
+
+            <form action="" class="opciones">
+                <div class="radio" id="taxi">
+                    
+
+                    <h3><input type="radio" name="taxi" id="taxi1" value= "1">
+                    <label for="taxi1"><strong>CAMIÓN 1</strong></label>
+
+                    <input type="radio" name="taxi" id="taxi2" value= "2">
+                    <label for="taxi2"><strong>CAMIÓN 2</strong></label>
+
+                    <input type="radio" name="taxi" id="ambos">
+                    <label for="ambos"><strong>Ambos</strong></label></h3>
+                </div>
+            </form>
+
+        <h2>Elegir radio:</h2>
+        <div class="label1" id="ra">
+			Radio(m):
+		</div>
+		<input type="text" class="label2" id="r" value="100" />
+        
+        <h2>Elegir fecha:</h2>
+        <input id="fecha_1" type="date" min="" max="" value="">
+
+        <ul>
+		    <input type="submit" class="button primary" id="consultar" value="Buscar">
+		</ul> 
+
+        <table>
+        <tr>
+            <td><center></center></td>
+            <td><center>Latitud</center></td>
+            <td><center>Longitud</center></td>
+        </tr>
+        <tr>
+            <td><center>Posición Inicial</center></td>
+            <td><center><font id="LatI"> </font></center></td>
+            <td><center><font id="LonI"> </font></center></td>
+        </tr>
+        <tr>
+            <td><center>Posición Final</center></td>
+            <td><center><font id="LatF"> </font></center></td>
+            <td><center><font id="LonF"> </font></center></td>
+        </tr>
+        </table>
+
+        <h2>Elegir hora:</h2>
+        <td>
+			<p id="insert3"></p>
+			<p id="insert5"></p>
+			<input type="range" min="0" max="86399" value="0" class="slider" id="myRange" oninput="cambio()" step="1"><br>
+			<span id="insert4"></span>
+		</td>
+
+        <div id="map-template"></div>
+    </section>
+
+<script>
+
+    //Mapa
+
+    var map = L.map('map-template').setView([10.99304, -74.82814], 13);
+    const tileurl = 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png';
+    const tileurl2 = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png';
+    L.tileLayer(tileurl).addTo(map);
+
+    L.tileLayer(tileurl, {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    marcador5 = L.marker([100000, 100000]).addTo(map);
+    marker = L.marker([10.983167, -74.802561], { draggable: 'true' }).addTo(map);
+    circle = L.circle([10.983167, -74.802561], { radius: 100, color: 'red' }).addTo(map);
+
+    
+     map.on("click", Onclickmap)
+    function Onclickmap(e) {
+    marcador5.setLatLng([10000,1000000])
+    if (poly) {
+        map.removeLayer(poly);
+    }
+    radio = radius.value;
+    //console.log(radio)
+    if (radius.value.length == 0) {
+        radio = 100;
+
+    }
+    marker.on("drag", mover)
+    marker.setLatLng(e.latlng);
+    circle.setLatLng(e.latlng);
+    circle.setRadius(radio);
+   }  
+     function mover(e) {
+        marcador5.setLatLng([10000, 1000000])
+        if (poly) {
+            map.removeLayer(poly);
+        }
+        //resultados.innerHTML = "Esperando consulta..."
+        radio = radius.value;
+        //console.log(radio)
+        if (radius.value.length == 0) {
+            radio = 100;
+        }
+        circle.setRadius(radio);
+        var marker = e.target;
+        var position = marker.getLatLng();
+        console.log(position)
+        marker.setLatLng(new L.LatLng(position.lat, position.lng), { draggable: 'true' });
+
+        circle.setLatLng([position.lat, position.lng])
+
+    }
+
+
+    //Slider
+
+    let coord, marcador, fecha;
+    var long, lat, m, poly, marker, circle, radius, resultados, valor_range;
+    var vector_c = [];
+    var vector_rpm = []
+    var vector_h = [];
+    radius = document.getElementById("r");
+    btn = document.getElementById("consultar");
+    resultados = document.getElementById("result");
+    range = document.getElementById("myRange");
+    console.log(range.value);
+
+    function cambio() {
+        console.log("aqui estoy");
+        valor_range = range.value;
+        let Hora = secondsToString(valor_range);
+        console.log(Hora);
+        console.log(vector_h);
+        let index_h = vector_h.findIndex(Element => Element == Hora)
+        document.getElementById("insert3").innerHTML = Hora
+
+        console.log(index_h);
+        marcador5.setLatLng([vector_c[index_h].lat, vector_c[index_h].lon])
+        document.getElementById("insert4").innerHTML = [vector_c[index_h].lat, vector_c[index_h].lon]
+        document.getElementById("insert5").innerHTML = "RPM= " + vector_rpm[index_h]
+
+    }
+
+    //fetch
+
+    fetch('/refresh1').then(res => {
+        return res.json();
+    }).then(mensaje => {
+        //////////////////////////////////////////////////////
+        console.log(mensaje);
+        range = document.getElementById("myRange");
+        range2 = document.getElementById("myRange2");
+        //////////////////////////////////////////////////////
+        map.removeLayer(marker);
+        map.removeLayer(circle);
+        let lat = mensaje[2];
+        let long = mensaje[3];
+        var newlatln = new L.LatLng(lat, long);
+        marker = L.marker(newlatln, { draggable: 'true' }).addTo(map);
+        map.setView(newlatln)
+        circle = L.circle(newlatln, { radius: 100 }).addTo(map);
+    });
+
+    //
+
+    var taxi = document.getElementById("taxi")
+    btn.addEventListener("click", () => {
+        valor = document.getElementsByName("taxi")[0].checked; //taxi1
+        valor2 = document.getElementsByName("taxi")[1].checked; // taxi2 
+        valor3 = document.getElementsByName("taxi")[2].checked; // taxi3 
+
+        if (valor == true) {
+            choose = 'BLODREINA';
+
+        } else if (valor2 == true) {
+            choose = 'WANHEDA';
+
+        } else if (valor3 == true) {
+            choose = 0;
+        } else {
+
+        }
+        console.log(choose);
+        const fecha_1 = document.getElementById("fecha_1");
+        let fecha = fecha_1.value;
+        fecha = fecha+'%';
+
+        radio = radius.value;
+        console.log(radio);
+        if (radius.value.length == 0) {
+            radio = 100;
+
+        }
+        circle.setRadius(radio);
+        let latt = circle.getLatLng().lat;
+        let lonn = circle.getLatLng().lng;
+        let radiuss = circle.getRadius() / 1000;
+        consulta2 = {
+            lat1: latt, lon: lonn, lat2: latt, radio: radiuss, f1: fecha, idsy: choose
+        }
+       
+
+        fetch("/htrc2", {
+            method: 'POST',
+            body: JSON.stringify(consulta2),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            return res.json();
+        }).then(datos => {
+            console.log(datos);
+            vector_c = [];
+            vector_h = [];
+            marcador5.setLatLng([100000, 10000000])
+            if (poly) {
+                map.removeLayer(poly);
+            }
+            if (datos.length == 0) {
+                alert("No hay datos en este intervalo");
+
+            } else {
+                datos.map((data, i) => {
+                    vector_c[i] = {
+                        lat: data.lat,
+                        lon: data.lon,
+                        fecha: data.fecha.slice(0, 10),
+                        hora: data.hora
+                    }
+                    vector_h[i] = data.hora;
+                    
+                    vector_rpm[i] = data.rpm;
+                });
+            poly = L.polyline(vector_c).addTo(map);
+            let min_d = [vector_c[0].lat,vector_c[0].lon];
+            document.getElementById("LatI").innerHTML = vector_c[0].lat;
+            document.getElementById("LonI").innerHTML = vector_c[0].lon;
+            let max_d = [vector_c[vector_c.length-1].lat,vector_c[vector_c.length-1].lon];
+            document.getElementById("LatF").innerHTML = vector_c[vector_c.length-1].lat;
+            document.getElementById("LonF").innerHTML = vector_c[vector_c.length-1].lon;
+            let valor_min = StringtoSecond(vector_h[0]);
+            let valor_max = StringtoSecond(vector_h[vector_h.length-1]);
+            console.log(valor_min);
+            console.log(valor_max);
+            console.log(range.max);
+            console.log(range.min);
+
+            range.min = valor_min;
+            range.max = valor_max;
+            }
+
+
+
+        });
+
+    });
+    //Funciones
+
+    function secondsToString(seconds) {
+        var hour = Math.floor(seconds / 3600);
+        hour = (hour < 10) ? '0' + hour : hour;
+        var minute = Math.floor((seconds / 60) % 60);
+        minute = (minute < 10) ? '0' + minute : minute;
+        var second = seconds % 60;
+        second = (second < 10) ? '0' + second : second;
+        return hour + ':' + minute + ':' + second;
+    }
+
+    function StringtoSecond(string) {
+        let qwerty = string.split(':');
+        let hora = parseInt(qwerty[0]) * 3600;
+        let min = parseInt(qwerty[1]) * 60;
+        let sec = parseInt(qwerty[2]);
+        let horat = hora + min + sec;
+        return horat;
+    }
+
+</script>
