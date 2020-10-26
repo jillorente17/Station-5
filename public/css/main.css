@@ -14,11 +14,16 @@ body{
 	opacity: 1;
 }
 .titulo{
-	background-color: rgb(2, 0, 1);
-	background: url(../taxis.png);
-	background-position: top;
-	background-size: cover;
-	height: 50rem;
+	background: rgba(246,41,12,1);
+    background: rgba(174,237,92,1);
+    background: -moz-linear-gradient(left, rgba(174,237,92,1) 0%, rgba(73,214,77,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(174,237,92,1)), color-stop(100%, rgba(73,214,77,1)));
+    background: -webkit-linear-gradient(left, rgba(174,237,92,1) 0%, rgba(73,214,77,1) 100%);
+    background: -o-linear-gradient(left, rgba(174,237,92,1) 0%, rgba(73,214,77,1) 100%);
+    background: -ms-linear-gradient(left, rgba(174,237,92,1) 0%, rgba(73,214,77,1) 100%);
+    background: linear-gradient(to right, rgba(174,237,92,1) 0%, rgba(73,214,77,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#aeed5c', endColorstr='#49d64d', GradientType=1 );
+    padding: 1rem 0 3rem 0;
 	/* min-height: 30rem;
 	min-width: 40rem; */
 }
@@ -72,17 +77,20 @@ body{
 /**/
 
 #map-template {
-	position: absolute;
-    height: 80%;
-	width: 90%;
-	margin-top: 15%;
-	margin-bottom: 5%;
-	margin-left: 5%;
-	margin-right: 1%;
+	position: relative;
+    height: 30rem;
+	width: 50%;
 	background: #777676;
 	border-style: ridge;
 	border-color: green;
     
+}
+.contenedor-funcion{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-left:3rem ;
+	margin-right: 3rem;
 }
 
 .resultados{
@@ -113,9 +121,7 @@ body{
 .fechas{
 	text-align: center;
 	background-color: green;
-	margin-left: 35%;
-	margin-right: 35%;
-	padding-bottom: 5%;
+	
 }
 
 #cerrar{
