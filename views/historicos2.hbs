@@ -20,73 +20,82 @@
 
 
             <nav class="navegacion">
-                <a href="localhost:8080/historicos.hbs" target="_blank">Históricos</a>
-                <a href="/" target="_blank">Volver</a>
+                <a href="historicos" target="_blank">Historics</a>
+                <a href="/" target="_blank">Back</a>
 
             </nav>
         </div>
-        <h1>¿Dónde estuvo el camión en determinado momento?</h1>
+        <h1>Temporary Location Of The Vehicle</h1>
     </div>
 </header>
 
-<section class="resultados">
-        <h2>Elegir camión:</h2>
+<section>
+    <div class="resultados">
+        <h2>Choose Vehicle</h2>
 
             <form action="" class="opciones">
                 <div class="radio" id="taxi">
                     
 
                     <h3><input type="radio" name="taxi" id="taxi1" value= "1">
-                    <label for="taxi1"><strong>CAMIÓN 1</strong></label>
+                    <label for="taxi1">Vehicle 1</label>
 
                     <input type="radio" name="taxi" id="taxi2" value= "2">
-                    <label for="taxi2"><strong>CAMIÓN 2</strong></label>
+                    <label for="taxi2">Vehicle 2</label>
 
                     <input type="radio" name="taxi" id="ambos">
-                    <label for="ambos"><strong>Ambos</strong></label></h3>
+                    <label for="ambos">Both</label></h3>
                 </div>
             </form>
+        </div>
 
-        <h2>Elegir radio:</h2>
-        <div class="label1" id="ra">
-			Radio(m):
-		</div>
-		<input type="text" class="label2" id="r" value="100" />
-        
-        <h2>Elegir fecha:</h2>
-        <input id="fecha_1" type="date" min="" max="" value="">
 
-        <ul>
-		    <input type="submit" class="button primary" id="consultar" value="Buscar">
-		</ul> 
+<div class="contenedor-funcion">
+        <div class="contenedor-historicos2">
 
-        <table>
-        <tr>
-            <td><center></center></td>
-            <td><center>Latitud</center></td>
-            <td><center>Longitud</center></td>
-        </tr>
-        <tr>
-            <td><center>Posición Inicial</center></td>
-            <td><center><font id="LatI"> </font></center></td>
-            <td><center><font id="LonI"> </font></center></td>
-        </tr>
-        <tr>
-            <td><center>Posición Final</center></td>
-            <td><center><font id="LatF"> </font></center></td>
-            <td><center><font id="LonF"> </font></center></td>
-        </tr>
-        </table>
 
-        <h2>Elegir hora:</h2>
-        <td>
-			<p id="insert3"></p>
-			<p id="insert5"></p>
-			<input type="range" min="0" max="86399" value="0" class="slider" id="myRange" oninput="cambio()" step="1"><br>
-			<span id="insert4"></span>
-		</td>
+            <p>Enter Search Radius (m):</p>
+            
+            <input type="text" class="label2" id="r" value="100" />
+            
+            
 
-        <div id="map-template"></div>
+            
+
+                <p>Search Hour</p>
+                    <td>
+                        <p id="insert3"></p>
+                        <p id="insert5"></p>
+                        <input type="range" min="0" max="86399" value="0" class="slider" id="myRange" oninput="cambio()" step="1"><br>
+                        <span id="insert4"></span>
+                    </td>
+                    <p>Enter Search Date</p>
+            <input id="fecha_1" type="date" min="" max="" value="">
+
+            <ul>
+                <input type="submit" class="button primary" id="consultar" value="Buscar">
+            </ul> 
+                    <table>
+                <tr>
+                    <td></td>
+                    <td>Latitude</td>
+                    <td>Longitude</td>
+                </tr>
+                <tr>
+                    <td>Initial Position></td>
+                    <td><font id="LatI"> </font></td>
+                    <td><font id="LonI"> </font></td>
+                </tr>
+                <tr>
+                    <td>Final Posicion></td>
+                    <td><font id="LatF"> </font></td>
+                    <td><font id="LonF"> </font></td>
+                </tr>
+            </table>
+            
+            </div>
+            <div id="map-template"></div>
+        </div>
     </section>
 
 <script>
@@ -309,3 +318,14 @@
     }
 
 </script>
+<footer class="site-footer seccion">
+        <div class="contenedor contenedor-footer">
+            <nav class="navegacion" id="navegacion">
+                    <a href="/">Home</a>
+                    <a href="/historicos" target="_blank">Historical Consultation</a>
+                    <a href="/historicos2" target="_blank">Temporal Position</a>
+                </nav>
+            <p class="copyright">All rights reserved 2020 &copy;</p>
+        </div>
+    </footer>
+    </html>

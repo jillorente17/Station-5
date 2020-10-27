@@ -15,7 +15,7 @@
 
     <div class="ventana" id="vent">
         <div id="cerrar"> <a href="javascript:cerrar()"><img src="/css/cancelar.png"></a></div>
-        Error: el tiempo de inicio es mayor que el de fin. Intente de nuevo.
+        Error: Initial time is greater than. Try again.
     </div>
 
 
@@ -29,46 +29,47 @@
 
 
                 <nav class="navegacion">
-                    <a href="" target="_blank">Históricos</a>
-                    <a href="/" target="_blank">Volver</a>
-
+                    <a href="/historicos2" target="_blank">Temporal Position</a>
+                    <a href="/" target="_blank">Back</a>
                 </nav>
+
             </div>
-            <h1>Consulta de históricos</h1>
+            <h1>Historical Consultation</h1>
         </div>
     </header>
 
 
     <section class="resultados">
-        <h2>Elegir camión:</h2>
+        <h2>Choose Vehicle:</h2>
 
         <form action="" class="opciones">
             <div class="radio">
 
 
                 <h3><input type="radio" name="taxi" id="taxi1" value="1">
-                    <label for="taxi1"><strong>CAMIÓN 1</strong></label>
+                    <label for="taxi1">Vehicle 1</label>
 
                     <input type="radio" name="taxi" id="taxi2" value="2">
-                    <label for="taxi2"><strong>CAMIÓN 2</strong></label>
+                    <label for="taxi2">Vehicle 2</label>
 
                     <input type="radio" name="taxi" id="ambos">
-                    <label for="ambos"><strong>Ambos</strong></label></h3>
+                    <label for="ambos">Both</label></h3>
             </div>
         </form>
     </section>
 
 
 <div class="contenedor-funcion">
+
     <section class="fechas">
-        <h2>Datos iniciales</h2>
+        <h2>Initial Date</h2>
         <h5><input id="fecha1" type="datetime-local" min="" max="" value=""></h5>
 
 
-        <h2>Datos finales</h2>
+        <h2>Final Date</h2>
         <input id="fecha2" type="datetime-local" min="" max="" value="">
-
-        <div class="button" onclick="javascript:comparar()">Consultar</div>
+<br>
+        <div class="button" onclick="javascript:comparar()">Search</div>
         
     </section>
     <div id="map-template"></div>
@@ -244,3 +245,15 @@
     inicio.value = today2;
 
 </script>
+
+<footer class="site-footer seccion">
+        <div class="contenedor contenedor-footer">
+            <nav class="navegacion" id="navegacion">
+                    <a href="/">Home</a>
+                    <a href="/historicos" target="_blank">Historical Consultation</a>
+                    <a href="/historicos2" target="_blank">Temporal Position</a>
+                </nav>
+            <p class="copyright">All rights reserved &copy;</p>
+        </div>
+    </footer>
+    </html>
