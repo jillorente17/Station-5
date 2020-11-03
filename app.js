@@ -93,7 +93,10 @@ app.get('/historicos', (req, res) => {
     res.render('historicos', {
     })
 })
-
+app.get('/inicio', (req, res) => {
+    res.render('inicio', {
+    })
+})
 //real time requests
 var compare = 'BLODREINA';
 app.get('/refresh', (req, res) => { // as� se llama a blodreina en la p�gina web o alguna funci�n que utilice lo contenido en blodreina de la p�gina

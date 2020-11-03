@@ -1,270 +1,70 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>APELL Barranquilla</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/normalize.css">
-    <link rel="stylesheet" media=""href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <title>Station 1</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet"> 
+    <link rel="stylesheet" href="/fonts">
     <link rel="stylesheet" href="/css/main.css">
-</head>
-
-
-
-
-<body>
     
+</head>
+<body>
     <header class="titulo opacidad">
-        <div class="contenedor contenido-header">
+    <div class="contenedor contenido-header">
         <div class="barra">
 
-                <img src="/logo.png" alt="Logo">
-           
+            <img src="/logo.png" alt="Logo">
 
-            
-                <nav class="navegacion">
-                    <a href="/">Home</a>
-                    <a href="/historicos" target="_blank">Historics Consultation</a>
-                    <a href="/historicos2" target="_blank">Temporal Position</a>
-                </nav>
+
+
+            <nav class="navegacion">
+                <a href="historicos" target="_blank">Historics</a>
+                <a href="/" target="_blank">Back</a>
+
+            </nav>
         </div>
-        <h1>Stations 5: Distribution Sector</h1>
-        </div>
-    </header>
+        <h1>Temporary Location Of Vehicle</h1>
+    </div>
+</header>
+  
+    <div class="contenedor-sesiones">
+        <label for="usuario">Usuario</label>
+        <input type="text" name="usuario" id="user">
+        <label for="contraseña">Contraseña</label>
+        <input type="password" name="contraseña" id="password">
+        <button type="button" onclick="validar(user,password)" class="boton boton-verde">Ingresar</button>
+    </div>
 
- <section class="resultados">
 
-   
-        <div class="radio">
-            <h2>Real time consultation</h2>
-        </div>
-    
-
-
-    <form class="opciones">
-       <div class="radio">
-            <h3><input type="radio" name="taxi" id="taxi1" value= "1">
-            <label for="taxi1"><strong>Vehicle 1</strong></label> &nbsp
-
-            <input type="radio" name="taxi" id="taxi2" value= "2">
-            <label for="taxi2"><strong>Vehicle 2</strong></label> &nbsp
-
-            <input type="radio" name="taxi" id="ambos">
-            <label for="ambos"><strong>Both</strong></label></h3>
-        </div>
     </form>
- </section>
-
-    <br>
-
-    <div class="contenedor-funcion">
-     <section class="resultados-tabla">
-         
-    <table>
-        <tr>
-            <td>Date</td>
-            <td>Vehicle 1</td>
-            <td>Vehicle 2</td>
-        </tr>
-        <tr>
-            <td>Date</td>
-            <td><font id="fecha"> </td>
-            <td><font id="fecha1"> </td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td><font id="hora"> </font></td>
-            <td><font id="hora1"> </font></td>
-        </tr>
-        <tr>
-            <td>Latitude</td>
-            <td><font id="latitud"> </font></td>
-            <td><font id="latitud1"> </font></td>
-        </tr>
-        <tr>
-            <td>Longitude</td>
-            <td><font id="longitud"></font></td>
-            <td><font id="longitud1"> </font></td>
-        </tr>
-        <tr>
-            <td>RPM</td>
-            <td><font id="velocidad"> </font></td>
-            <td>---------</td>
-        </tr>
-    </table>
-    </section>
-
-
-     <div id="map-template"></div>
-    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-                   
-
-    <script>
-
-        let valor, valor2,valor3,id, compare, long,lat,fech,tiem,fech2,tiem2,fech3,unixt,unixdate,coord,d,marcador;
-        const map = L.map('map-template').setView([10.99304, -74.82814], 13);
-        const tileurl = 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png';
-        const tileurl2 = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png';
-        L.tileLayer(tileurl).addTo(map);
-
-         marcador = L.marker([10, -10])
-        //const marker = L.marker([lat, long]).bindPopup(`${fech2},${tiem2}`);
-         L.tileLayer(tileurl).addTo(map);
-        marcador1 = L.marker([10, -10])
-        marcador2 = L.marker([10, -10])
-        marcador1.addTo(map);
-        marcador2.addTo(map);
-        var poly1 = L.polyline([]).addTo(map) ;
-        var poly2 = L.polyline([]).addTo(map) ;
-
-        compare = 'BLODREINA';   
-        valor = document.getElementsByName("taxi")[0].checked;
-        valor1 = document.getElementsByName("taxi")[1].checked; 
-        valor2 = document.getElementsByName("taxi")[2].checked;  
-        if (valor == true){
-          console.log('good news');
-         }
-      function actualizar() {   //mapa
-          fetch("/refresh").then(res => {
-             return res.json();
-             }).then(coord => {
-            datos = coord;
-            fech3 = datos[0];
-            fech2 = fech3.slice(0,9);
-            tiem2 = datos[1];
-            lat = datos[2];
-            long = datos[3];
-            id = datos[4];
-            console.log(id);
-            let fecha = fech2;
-            let hora = tiem2;
-            valor = document.getElementsByName("taxi")[0].checked; //taxi1
-            valor2=  document.getElementsByName("taxi")[1].checked; // taxi2
-            valor3 = document.getElementsByName("taxi")[2].checked; //ambos
-            
-            if(valor == true){
-              marcador1.addTo(map);
-              console.log('taxi 1');
-               poly2.setStyle({
-                  color: 'rgba(0,0,0,0)'
-                });
-               map.removeLayer(marcador2);
-              if(id == compare ){
-                let newLatLng = new L.LatLng(lat, long)
-                //console.log(newLatLng);
-                marcador1.setLatLng(newLatLng);
-                marcador1.bindPopup(id);
-                poly1.addLatLng(newLatLng);
-                poly1.setStyle({
-                  color: 'red'
-                });
-              }
-            }else if(valor2 == true){
-               marcador2.addTo(map);
-               console.log('taxi 2');
-                poly1.setStyle({
-                  color: 'rgba(0,0,0,0)'
-                });
-                map.removeLayer(marcador1);             
-                
-               if(id != compare ){
-                  let newLatLng2 = new L.LatLng(lat, long);
-                 // console.log(newLatLng2);
-                  marcador2.setLatLng(newLatLng2);
-                  marcador2.bindPopup(id);
-                  poly2.addLatLng(newLatLng2);
-                  poly2.setStyle({
-                      color: 'green'
-                  });
-                
-                }
-            }else if( valor3 == true){
-                marcador1.addTo(map);
-                marcador2.addTo(map);
-                console.log('ambos taxis');
-                if(id == compare ){
-                  let newLatLng = new L.LatLng(lat, long)
-                  marcador1.setLatLng(newLatLng);
-                  marcador1.bindPopup(id);
-                  poly1.addLatLng(newLatLng);
-                  poly1.setStyle({
-                      color: 'red'
-                  });
-                }else {
-                  let newLatLng2 = new L.LatLng(lat, long)
-                  //console.log(newLatLng2);
-                  marcador2.setLatLng(newLatLng2);
-                  marcador2.bindPopup(id);
-                  poly2.addLatLng(newLatLng2);
-                  poly2.setStyle({
-                      color: 'green'
-                  });  
-                }
-            }else {
-                console.log('no se muestra nada');
-            }
-             
-             });
-        }
-        let actualizarLista = setInterval(actualizar, 1000);
-    </script>
-    <script>
-    function actualizar_data(){  //datos
-        let recData
-         fetch("/refresh").then(res =>{
-               return res.json();
-         }).then(coord => {
-            datos = coord; 
-            var id, long2,lat2,fech,tiem,fech2,tiem2,fech3,unixt,unixdate;
-            id = datos[4];
-            console.log(id);
-            
-            if(id == compare){
-            var coord1=document.getElementById("fecha");
-            var coord2=document.getElementById("hora");
-            var coord3=document.getElementById("latitud");
-            var coord4=document.getElementById("longitud");
-           var coord5 =document.getElementById("velocidad");
-            console.log('es correcto');
-           }else {
-            var coord1=document.getElementById("fecha1");
-            var coord2=document.getElementById("hora1");
-            var coord3=document.getElementById("latitud1");
-            var coord4=document.getElementById("longitud1");
-           }
-            fech3 = datos[0];
-            fech2 = fech3.slice(0,10);
-            tiem2 = datos[1];
-            lat = datos[2];
-            long = datos[3];
-            velo = datos[5];
-	    coord1.innerText=fech2;
-            coord2.innerText=tiem2;
-            coord3.innerText=lat;
-            coord4.innerText=long;
-            if(id == compare){
-
-              coord5.innerText = velo;  
-            }
-       });
-    }
-        let actualizardata = setInterval(actualizar_data, 1000);
-    </script>
-    </div> 
+<script>
+    function validar(user,password){
+        console.log(user.value,password.value)
+        if(user.value=="Lab_automatizacion" && password.value=="1234"){
+            location.href ="main.html";
+        console.log('sesion correcta')
+    }else{
+        alert('Usuario y contraseña errados');
+    }};
+</script>
 
 
 
 
+
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------------->
     <footer class="site-footer seccion">
         <div class="contenedor contenedor-footer">
-            <nav class="navegacion" id="navegacion">
-                    <a href="/">Home</a>
-                    <a href="/historicos" target="_blank">Historical Consultation</a>
-                    <a href="/historicos2" target="_blank">Temporal Position</a>
-                </nav>
-            <p class="copyright">All rights reserved &copy;</p>
+            <nav id="navegacion" class="navegacion">
+                <a href="/">Home</a>
+                <a href="#stations">Monitoring Stations</a>
+                <a href="historics.html">Historics</a>
+                <a href="#sim-ecoimp">Simulation and Economical Impact</a>
+            </nav>
+            <p class="copyright">Todos los Derechos Reservados 2020 &copy;</p>
         </div>
     </footer>
 </body>
